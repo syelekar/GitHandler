@@ -9,16 +9,42 @@ pipeline
     }
     stages
     {
-		stage('Deploy')
+		stage('DeployQA')
         {
             when
             {
-                expression{params.ACTION.toLowerCase() == "deploy"}
+                expression{params.ACTION.toLowerCase() == "deploy" && params.DEPLOY_ENVIRONMENT.toLowerCase() == 'qa'}
             }
             steps
             {    
 				verifyJiraCard("${params.JIRA_CARD}", "k8s-demo-app", "${this.params.DEPLOY_ENVIRONMENT}")
-				deploy()
+				deployQA()
+				updateJiraCard("${params.JIRA_CARD}", "k8s-demo-app", "${this.params.DEPLOY_ENVIRONMENT}")
+			}
+        }
+		stage('DeployStage')
+        {
+            when
+            {
+                expression{params.ACTION.toLowerCase() == "deploy" && params.DEPLOY_ENVIRONMENT.toLowerCase() == 'stage'}
+            }
+            steps
+            {    
+				verifyJiraCard("${params.JIRA_CARD}", "k8s-demo-app", "${this.params.DEPLOY_ENVIRONMENT}")
+				deployStage()
+				updateJiraCard("${params.JIRA_CARD}", "k8s-demo-app", "${this.params.DEPLOY_ENVIRONMENT}")
+			}
+        }
+		stage('DeployProd')
+        {
+            when
+            {
+                expression{params.ACTION.toLowerCase() == "deploy" && params.DEPLOY_ENVIRONMENT.toLowerCase() == 'prod'}
+            }
+            steps
+            {    
+				verifyJiraCard("${params.JIRA_CARD}", "k8s-demo-app", "${this.params.DEPLOY_ENVIRONMENT}")
+				deployProd()
 				updateJiraCard("${params.JIRA_CARD}", "k8s-demo-app", "${this.params.DEPLOY_ENVIRONMENT}")
 			}
         }
@@ -38,18 +64,7 @@ pipeline
 	}		
 }
 
-def deploy() {	
-	s3pathToDeploy = 'abc'
-	if (this.params.DEPLOY_ENVIRONMENT == "qa") {
-	s3pathToDeploy = "s3://sdlc-toolchain-qa/demo/qa/index.html"
-	}
-	if (this.params.DEPLOY_ENVIRONMENT == "stage") {
-	s3pathToDeploy = "s3://sdlc-toolchain-qa/demo/stage/index.html"
-	}
-	if (this.params.DEPLOY_ENVIRONMENT == "prod") {
-	s3pathToDeploy = "s3://sdlc-toolchain-qa/demo/prod/index.html"
-	}
-	
+def deployQA() {
 	sh '''
 	account_id=$(aws ssm get-parameter --name travel-qa-id --with-decryption --region us-east-1 | jq -r .Parameter.Value)
     role="arn:aws:iam::${account_id}:role/travel-qa-eks-deploy-role"
@@ -57,7 +72,39 @@ def deploy() {
     export AWS_ACCESS_KEY_ID=$(jq -r '.Credentials.AccessKeyId' assume-role-output.json)
     export AWS_SECRET_ACCESS_KEY=$(jq -r '.Credentials.SecretAccessKey' assume-role-output.json)
     export AWS_SESSION_TOKEN=$(jq -r '.Credentials.SessionToken' assume-role-output.json)
-    aws s3 cp index.html ${s3pathToDeploy}
+    aws s3 cp index.html s3://sdlc-toolchain-qa/demo/qa/index.html
+				  
+	unset AWS_ACCESS_KEY_ID
+    unset AWS_SECRET_ACCESS_KEY
+    unset AWS_SESSION_TOKEN
+    '''
+}
+
+def deployStage() {		
+	sh '''
+	account_id=$(aws ssm get-parameter --name travel-qa-id --with-decryption --region us-east-1 | jq -r .Parameter.Value)
+    role="arn:aws:iam::${account_id}:role/travel-qa-eks-deploy-role"
+    aws sts assume-role --role-arn $role --role-session-name TemporarySessionKeys --output json > assume-role-output.json
+    export AWS_ACCESS_KEY_ID=$(jq -r '.Credentials.AccessKeyId' assume-role-output.json)
+    export AWS_SECRET_ACCESS_KEY=$(jq -r '.Credentials.SecretAccessKey' assume-role-output.json)
+    export AWS_SESSION_TOKEN=$(jq -r '.Credentials.SessionToken' assume-role-output.json)
+    aws s3 cp index.html s3://sdlc-toolchain-qa/demo/stage/index.html
+				  
+	unset AWS_ACCESS_KEY_ID
+    unset AWS_SECRET_ACCESS_KEY
+    unset AWS_SESSION_TOKEN
+    '''
+}
+
+def deployProd() {	
+	sh '''
+	account_id=$(aws ssm get-parameter --name travel-qa-id --with-decryption --region us-east-1 | jq -r .Parameter.Value)
+    role="arn:aws:iam::${account_id}:role/travel-qa-eks-deploy-role"
+    aws sts assume-role --role-arn $role --role-session-name TemporarySessionKeys --output json > assume-role-output.json
+    export AWS_ACCESS_KEY_ID=$(jq -r '.Credentials.AccessKeyId' assume-role-output.json)
+    export AWS_SECRET_ACCESS_KEY=$(jq -r '.Credentials.SecretAccessKey' assume-role-output.json)
+    export AWS_SESSION_TOKEN=$(jq -r '.Credentials.SessionToken' assume-role-output.json)
+    aws s3 cp index.html s3://sdlc-toolchain-qa/demo/prod/index.html
 				  
 	unset AWS_ACCESS_KEY_ID
     unset AWS_SECRET_ACCESS_KEY
