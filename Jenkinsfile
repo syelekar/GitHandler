@@ -39,7 +39,7 @@ pipeline
 }
 
 def deploy() {	
-	
+	s3pathToDeploy = 'abc'
 	if (this.params.DEPLOY_ENVIRONMENT == "qa") {
 	s3pathToDeploy = "s3://sdlc-toolchain-qa/demo/qa/index.html"
 	}
