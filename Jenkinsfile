@@ -22,7 +22,7 @@ pipeline
                   export AWS_ACCESS_KEY_ID=$(jq -r '.Credentials.AccessKeyId' assume-role-output.json)
                   export AWS_SECRET_ACCESS_KEY=$(jq -r '.Credentials.SecretAccessKey' assume-role-output.json)
                   export AWS_SESSION_TOKEN=$(jq -r '.Credentials.SessionToken' assume-role-output.json)
-                  aws s3 cp index.html s3://sdlc-toolchain-qa/demo/qa
+                  aws s3 cp index.html s3://sdlc-toolchain-qa/demo/qa/index.html
 				  unset AWS_ACCESS_KEY_ID
                   unset AWS_SECRET_ACCESS_KEY
                   unset AWS_SESSION_TOKEN
@@ -44,7 +44,7 @@ pipeline
                   export AWS_ACCESS_KEY_ID=$(jq -r '.Credentials.AccessKeyId' assume-role-output.json)
                   export AWS_SECRET_ACCESS_KEY=$(jq -r '.Credentials.SecretAccessKey' assume-role-output.json)
                   export AWS_SESSION_TOKEN=$(jq -r '.Credentials.SessionToken' assume-role-output.json)
-                  aws s3 cp index.html s3://sdlc-toolchain-qa/demo/stage
+                  aws s3 cp index.html s3://sdlc-toolchain-qa/demo/stage/index.html
 				  unset AWS_ACCESS_KEY_ID
                   unset AWS_SECRET_ACCESS_KEY
                   unset AWS_SESSION_TOKEN
@@ -60,14 +60,14 @@ pipeline
             steps
             {      
                 sh '''
-				  account_id=$(aws ssm get-parameter --name travel-qa-id --with-decryption --region us-east-1 | jq -r .Parameter.Value)
+		  account_id=$(aws ssm get-parameter --name travel-qa-id --with-decryption --region us-east-1 | jq -r .Parameter.Value)
                   role="arn:aws:iam::${account_id}:role/travel-qa-eks-deploy-role"
                   aws sts assume-role --role-arn $role --role-session-name TemporarySessionKeys --output json > assume-role-output.json
                   export AWS_ACCESS_KEY_ID=$(jq -r '.Credentials.AccessKeyId' assume-role-output.json)
                   export AWS_SECRET_ACCESS_KEY=$(jq -r '.Credentials.SecretAccessKey' assume-role-output.json)
                   export AWS_SESSION_TOKEN=$(jq -r '.Credentials.SessionToken' assume-role-output.json)
-                  aws s3 cp index.html s3://sdlc-toolchain-qa/demo/prod
-				  unset AWS_ACCESS_KEY_ID
+                  aws s3 cp index.html s3://sdlc-toolchain-qa/demo/prod/index.html
+		  unset AWS_ACCESS_KEY_ID
                   unset AWS_SECRET_ACCESS_KEY
                   unset AWS_SESSION_TOKEN
                     '''
