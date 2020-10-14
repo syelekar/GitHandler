@@ -38,8 +38,7 @@ pipeline
 	}		
 }
 
-def deploy() {
-	sh '''
+def deploy() {	
 	
 	if (this.DEPLOY_PARAMS.RELEASE_ENVIRONMENT == "qa") {
 	s3pathToDeploy = "s3://sdlc-toolchain-qa/demo/qa/index.html"
@@ -51,7 +50,7 @@ def deploy() {
 	s3pathToDeploy = "s3://sdlc-toolchain-qa/demo/prod/index.html"
 	}
 	
-	
+	sh '''
 	account_id=$(aws ssm get-parameter --name travel-qa-id --with-decryption --region us-east-1 | jq -r .Parameter.Value)
     role="arn:aws:iam::${account_id}:role/travel-qa-eks-deploy-role"
     aws sts assume-role --role-arn $role --role-session-name TemporarySessionKeys --output json > assume-role-output.json
