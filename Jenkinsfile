@@ -22,6 +22,19 @@ pipeline
 				updateJiraCard("${params.JIRA_CARD}", "k8s-demo-app", "${this.params.DEPLOY_ENVIRONMENT}")
 			}
         }
+		stage('Build')
+        {
+			when
+            {
+                expression{params.ACTION.toLowerCase() == "build"}
+            }
+            steps
+            {  
+				sh '''
+				echo " Build completed succesfully"
+				'''
+			}
+		}
 	}		
 }
 
