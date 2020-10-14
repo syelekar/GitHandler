@@ -40,13 +40,13 @@ pipeline
 
 def deploy() {	
 	
-	if (this.DEPLOY_PARAMS.RELEASE_ENVIRONMENT == "qa") {
+	if (this.params.DEPLOY_ENVIRONMENT == "qa") {
 	s3pathToDeploy = "s3://sdlc-toolchain-qa/demo/qa/index.html"
 	}
-	if (this.DEPLOY_PARAMS.RELEASE_ENVIRONMENT == "stage") {
+	if (this.params.DEPLOY_ENVIRONMENT == "stage") {
 	s3pathToDeploy = "s3://sdlc-toolchain-qa/demo/stage/index.html"
 	}
-	if (this.DEPLOY_PARAMS.RELEASE_ENVIRONMENT == "prod") {
+	if (this.params.DEPLOY_ENVIRONMENT == "prod") {
 	s3pathToDeploy = "s3://sdlc-toolchain-qa/demo/prod/index.html"
 	}
 	
