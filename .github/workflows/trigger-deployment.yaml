@@ -2,8 +2,13 @@ name: TriggerDeployment
 on: 
   workflow_dispatch:
     inputs:
-      releaseCard:
+      ReleaseCard:
         description: 'Release card'     
+        required: true
+      Branch:
+        description: 'Branch'
+      Environment:
+        description: 'Environment'     
         required: true
         
 jobs:
