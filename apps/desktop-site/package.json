@@ -1,0 +1,19 @@
+{
+  "name": "desktop-site",
+  "version": "1.0.0",
+  "scripts": {
+    "serve:app": "ng serve",
+    "build:app": "ng build --prod",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "lint": "ng lint",
+    "lint:fix": "ng lint --fix=true",
+    "test:e2e": " env TS_NODE_PROJECT=\"./e2e/tsconfig.json\"  ts-node ./e2e/runner.ts",
+    "generate-e2e-report": "allure generate e2e/allure-results --clean && allure open",
+    "test:accessibility": " env TS_NODE_PROJECT=\"./accessibility/tsconfig.json\"  ts-node ./accessibility/runner.ts",
+    "generate-accessibility-report": "allure generate accessibility/allure-results --clean && allure open",
+    "postinstall": "ngcc",
+    "build:custom": "ng build --extra-webpack-config webpack.externals.js --prod"
+  },
+  "private": true
+}
