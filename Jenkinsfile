@@ -67,11 +67,11 @@ pipeline
 
 def deployQA() {
 	sh '''
-	git tag ${this.params.BRANCH_NAME} || echo "tag already exist"	
-	git tag --delete ${this.params.BRANCH_NAME};git push --delete origin ${this.params.BRANCH_NAME}
-	git tag ${this.params.BRANCH_NAME}
+	git tag ${params.BRANCH_NAME} || echo "tag already exist"	
+	git tag --delete ${params.BRANCH_NAME};git push --delete origin ${params.BRANCH_NAME}
+	git tag ${params.BRANCH_NAME}
     git push --tags
-	git push origin ${this.params.BRANCH_NAME}
+	git push origin ${params.BRANCH_NAME}
 							
 	account_id=$(aws ssm get-parameter --name travel-qa-id --with-decryption --region us-east-1 | jq -r .Parameter.Value)
     role="arn:aws:iam::${account_id}:role/travel-qa-eks-deploy-role"
