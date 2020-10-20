@@ -52,7 +52,7 @@ pipeline
         {
 			when
             {
-                expression{params.ACTION.toLowerCase() == "b"}
+                expression{params.ACTION.toLowerCase() == "build"}
             }
             steps
             {  
