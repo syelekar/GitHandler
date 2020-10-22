@@ -6,7 +6,6 @@ pipeline
         choice(name: "ACTION", choices: ["Build","deploy"], description: "Select the action")
 		choice(name: "DEPLOY_ENVIRONMENT", choices: ["QA","Stage","Prod"], description: "Select the release environment")
 		string(name: "JIRA_CARD", defaultValue: 'KR-9272', description: 'Select the release card')
-		string(name: "BRANCH_NAME", defaultValue: "develop", description: 'Select the branch')
     }
     stages
     {
@@ -53,7 +52,7 @@ pipeline
         {
 			when
             {
-                expression{params.ACTION.toLowerCase() == "build"}
+                expression{params.ACTION.toLowerCase() == "b"}
             }
             steps
             {  
@@ -67,12 +66,6 @@ pipeline
 
 def deployQA() {
 	sh '''
-	git tag ${params.BRANCH_NAME} || echo "tag already exist"	
-	git tag --delete ${params.BRANCH_NAME};git push --delete origin ${params.BRANCH_NAME}
-	git tag ${params.BRANCH_NAME}
-    git push --tags
-	git push origin ${params.BRANCH_NAME}
-							
 	account_id=$(aws ssm get-parameter --name travel-qa-id --with-decryption --region us-east-1 | jq -r .Parameter.Value)
     role="arn:aws:iam::${account_id}:role/travel-qa-eks-deploy-role"
     aws sts assume-role --role-arn $role --role-session-name TemporarySessionKeys --output json > assume-role-output.json
