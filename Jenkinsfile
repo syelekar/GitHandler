@@ -123,7 +123,7 @@ def verifyJiraCard(String jira_card, String repo_name, String release_environmen
   build job: '/Process Automation/Process-GateKeeper-Multiple-Cards-Verify', parameters: [
     string(name: 'JiraCards', value: jira_card),
     string(name: 'RepoName', value: repo_name),
-    string(name: 'ReleaseEnv', value: release_environment)
+    string(name: 'ReleaseEnv', value: release_environment.toLowerCase())
   ]
 }
 
@@ -131,6 +131,6 @@ def updateJiraCard(String jira_card, String repo_name, String release_environmen
   build job: '/Process Automation/Process-GateKeeper-Multiple-Cards-Update', parameters: [
     string(name: 'JiraCards', value: jira_card),
     string(name: 'RepoName', value: repo_name),
-    string(name: 'ReleaseEnv', value: release_environment)
+    string(name: 'ReleaseEnv', value: release_environment.toLowerCase())
   ]
 }
