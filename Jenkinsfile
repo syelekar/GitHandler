@@ -6,6 +6,7 @@ pipeline
         choice(name: "ACTION", choices: ["Build","deploy"], description: "Select the action")
 		choice(name: "DEPLOY_ENVIRONMENT", choices: ["QA","Stage","Prod"], description: "Select the release environment")
 		string(name: "JIRA_CARD", defaultValue: 'KR-9272', description: 'Select the release card')
+		string(name: "BRANCH_NAME", defaultValue: 'develop', description: 'Select the branch')
     }
     stages
     {
@@ -116,7 +117,7 @@ def verifyJiraCard(String jira_card, String repo_name, String release_environmen
   build job: '/Process Automation/Process-GateKeeper-Multiple-Cards-Verify', parameters: [
     string(name: 'JiraCards', value: jira_card),
     string(name: 'RepoName', value: repo_name),
-    string(name: 'ReleaseEnv', value: release_environment)
+    string(name: 'ReleaseEnv', value: release_environment.toLowerCase())
   ]
 }
 
@@ -124,6 +125,6 @@ def updateJiraCard(String jira_card, String repo_name, String release_environmen
   build job: '/Process Automation/Process-GateKeeper-Multiple-Cards-Update', parameters: [
     string(name: 'JiraCards', value: jira_card),
     string(name: 'RepoName', value: repo_name),
-    string(name: 'ReleaseEnv', value: release_environment)
+    string(name: 'ReleaseEnv', value: release_environment.toLowerCase())
   ]
 }
