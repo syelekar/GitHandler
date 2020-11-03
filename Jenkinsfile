@@ -6,6 +6,7 @@ pipeline
         choice(name: "ACTION", choices: ["Build","deploy"], description: "Select the action")
 		choice(name: "DEPLOY_ENVIRONMENT", choices: ["QA","Stage","Prod"], description: "Select the release environment")
 		string(name: "JIRA_CARD", defaultValue: 'KR-9272', description: 'Select the release card')
+		string(name: "BRANCH_NAME", defaultValue: 'develop', description: 'Select the branch')
     }
     stages
     {
